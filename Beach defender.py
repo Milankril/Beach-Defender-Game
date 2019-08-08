@@ -11,7 +11,7 @@ screen = pygame.display.set_mode((screenwidth, screenheight)) # Background posit
 pygame.display.set_caption("Beach Defender")
 
 bg = pygame.image.load('bg.png') # Background Image
-br = pygame.image.load('')
+br = pygame.image.load('br.png') # Background when playing game
 x = (screenwidth*0.45)
 y = (screenheight*0.8)
 
@@ -85,6 +85,7 @@ def redrawGameWindow():
 
     if scrn == 1:
         screen.fill((255, 100, 100))
+        screen.blit(br, (0, 0))
         pygame.display.update()
 
 font = pygame.font.SysFont('', 60, True)
