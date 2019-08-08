@@ -86,9 +86,24 @@ def redrawGameWindow():
     if scrn == 1:
         screen.fill((255, 100, 100))
         screen.blit(br, (0, 0))
+
+        mouse = pygame.mouse.get_pos()
+
+
+        if 10+90 > mouse [0] > 10 and 10+25 > mouse [1] > 10:
+            pygame.draw.rect(screen, green, (10,10,90,25))
+        else:
+            pygame.draw.rect(screen, bright_green, (10,10,90,25))
+        play = fontB.render('BACK', 1, ((0, 0, 0)))
+        screen.blit(play, (10, 10))
+
+
         pygame.display.update()
 
+
+
 font = pygame.font.SysFont('', 60, True)
+fontB = pygame.font.SysFont('', 40, True)
 scrn = 0
 run = True
 while run:
