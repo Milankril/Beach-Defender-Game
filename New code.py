@@ -6,14 +6,20 @@ screen = pygame.display.set_mode((screenwidth, screenheight)) # Background posit
 pygame.display.set_caption("Beach Defender")
 bg = pygame.image.load('bg.png') # Background Image
 br = pygame.image.load('br.png') # Background when playing game
-x = (screenwidth*0.45)
-y = (screenheight*0.8)
 clock = pygame.time.Clock()
 green = (0,200,0)
 red = (200,0,0)
 play = ''
 bright_red = (255,0,0)
 bright_green = (0,255,0)
+
+font = pygame.font.SysFont('', 60, True)
+fontb = pygame.font.SysFont('', 40, True)
+scrn = 0
+x_change = 0
+
+binImg = pygame.image.load('bin.png')
+
 
 
 
@@ -107,19 +113,45 @@ def redrawGameWindow():
         '''
         button('pushed')
 
-
+        car(x,y)
         pygame.display.update()
 
 
+def car(x,y):
+    screen.blit(binImg,(x,y))
 
-font = pygame.font.SysFont('', 60, True)
-fontb = pygame.font.SysFont('', 40, True)
-scrn = 0
+x = (520*0.3)
+y = (screenheight*0.5)
+
+
+
+
+
 run = True
 while run:
-    clock.tick(30)
+
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                x_change = -5
+            elif event.key == pygame.K_RIGHT:
+                x_change = 5
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                x_change = 0
+
+
+
+    x += x_change
+
+
+
+    clock.tick(80)
     redrawGameWindow()
+
 pygame.quit()
