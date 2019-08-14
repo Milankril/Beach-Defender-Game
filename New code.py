@@ -1,4 +1,5 @@
 import pygame
+import random
 pygame.init()
 screenwidth = 520
 screenheight = 676
@@ -12,16 +13,26 @@ red = (200,0,0)
 play = ''
 bright_red = (255,0,0)
 bright_green = (0,255,0)
-
+xtrash = random.randint(20,460)
 font = pygame.font.SysFont('', 60, True)
 fontb = pygame.font.SysFont('', 40, True)
 scrn = 0
-x_change = 0
+
 
 binImg = pygame.image.load('bin.png')
+binsize = pygame.transform.scale(binImg, (100,100))
 
 
+class falling_trash(object):
+    def __init__(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.vel = 3
 
+    def draw(self, screen):
+        pygame.draw.rect(screen, (0, 0, 0), (self.x, self.y, self.width, self.height))
 
 def button(action=''):
     global scrn, play, run
@@ -113,19 +124,31 @@ def redrawGameWindow():
         '''
         button('pushed')
 
-        car(x,y)
+        falling_trash1.draw(screen)
+
+        bin(x,y)
         pygame.display.update()
 
 
-def car(x,y):
-    screen.blit(binImg,(x,y))
-
-x = (520*0.3)
-y = (screenheight*0.5)
 
 
 
+def bin(x,y):
+    screen.blit(binsize,(x,y))
 
+
+
+
+x = 260
+y = 550
+
+x_change = 0
+
+falling_trash1 = falling_trash(xtrash, 50, 50, 50)
+
+
+waittime = 0
+fallwait = 0
 
 run = True
 while run:
@@ -134,7 +157,7 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-
+        '''
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 x_change = -5
@@ -144,14 +167,33 @@ while run:
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 x_change = 0
+        '''
+
+    if scrn == 1:
+        falling_trash1.x = xtrash
+        if falling_trash1.y < 0:
+            falling_trash1.y = 0
+        elif falling_trash1.y < 600:
+            falling_trash1.y += 3
+        falling_trash1.width = 100
+        falling_trash1.height = 50
 
 
+    keys = pygame.key.get_pressed()
 
-    x += x_change
+    if keys[pygame.K_LEFT] and scrn == 1 and x > 5:
+        x -= 5
+    if keys[pygame.K_RIGHT] and scrn == 1 and x < 420:
+        x += 5
+
+
+    # x += x_change
 
 
 
     clock.tick(80)
+    bin(x,y)
+
     redrawGameWindow()
 
 pygame.quit()
