@@ -13,14 +13,44 @@ red = (200,0,0)
 play = ''
 bright_red = (255,0,0)
 bright_green = (0,255,0)
-xtrash = random.randint(20,460)
+# xtrash = random.randint(20,460)
 font = pygame.font.SysFont('', 60, True)
 fontb = pygame.font.SysFont('', 40, True)
 scrn = 0
 
-
+trashImg = pygame.image.load('trash.png')
 binImg = pygame.image.load('bin.png')
+
+trashsize = pygame.transform.scale(trashImg, (50,50))
 binsize = pygame.transform.scale(binImg, (100,100))
+
+
+class bin(object):
+    def __init__(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.vel = 7
+        self.hitbox = (self.x,self.y, 97,30)
+
+    def drawbin(self, screen):
+        self.hitbox = (self.x,self.y, 97,30)
+        screen.blit(binsize, (self.x, self.y))
+        pygame.draw.rect(screen, (255, 0, 0), self.hitbox,2)
+
+    def movebin(self, screen):
+        if keys[pygame.K_LEFT] and scrn == 1 and self.x > 5:
+            self.x -= self.vel
+        if keys[pygame.K_RIGHT] and scrn == 1 and self.x < 420:
+            self.x += self.vel
+
+    def hit(self):
+        print('hit')
+
+
+
+
 
 
 class falling_trash(object):
@@ -30,8 +60,10 @@ class falling_trash(object):
         self.width = width
         self.height = height
         self.vel = 3
-
+        self.hitbox = (self.x, self.y, 50, 50)
     def draw(self, screen):
+        self.hitbox = (self.x, self.y, 50, 50)
+        pygame.draw.rect(screen, (255, 0, 0), self.hitbox,2)
         pygame.draw.rect(screen, (0, 0, 0), (self.x, self.y, self.width, self.height))
 
 def button(action=''):
@@ -124,17 +156,15 @@ def redrawGameWindow():
         '''
         button('pushed')
 
-        falling_trash1.draw(screen)
 
-        bin(x,y)
+
+
+        for falling_trash1 in fallingrubbish:
+            falling_trash1.draw(screen)
+        bin1.drawbin(screen)
         pygame.display.update()
 
 
-
-
-
-def bin(x,y):
-    screen.blit(binsize,(x,y))
 
 
 
@@ -144,11 +174,15 @@ y = 550
 
 x_change = 0
 
-falling_trash1 = falling_trash(xtrash, 50, 50, 50)
+# falling_trash1 = falling_trash(xtrash, 50, 50, 50)
+bin1 = bin(260, 550, 100, 100)
 
 
-waittime = 0
-fallwait = 0
+fallingrubbish = []
+rand_x = 0
+falling = False
+falling_wait = 0
+random_time = 0
 
 run = True
 while run:
@@ -157,42 +191,57 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-        '''
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                x_change = -5
-            elif event.key == pygame.K_RIGHT:
-                x_change = 5
 
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                x_change = 0
-        '''
+    for falling_trash1 in fallingrubbish:
+        if scrn == 1:
+            if falling_trash1.y < 0:
+                falling_trash1.y = 0
+            elif falling_trash1.y < 600:
+                falling_trash1.y += 3
+            falling_trash1.width = 50
+            falling_trash1.height = 50
+            if falling_trash1.y - 50 < bin1.hitbox[1] + bin1.hitbox[3] and falling_trash1.y + 50 > bin1.hitbox[1]:
+                if falling_trash1.x + 50 > bin1.hitbox[0] and falling_trash1.x < bin1.hitbox[0] + bin1.hitbox[2]:
+                    bin1.hit()
+                    fallingrubbish.pop(fallingrubbish.index(falling_trash1))
 
-    if scrn == 1:
-        falling_trash1.x = xtrash
-        if falling_trash1.y < 0:
-            falling_trash1.y = 0
-        elif falling_trash1.y < 600:
-            falling_trash1.y += 3
-        falling_trash1.width = 100
-        falling_trash1.height = 50
+            if falling_trash1.y > 599:
+                fallingrubbish.pop(fallingrubbish.index(falling_trash1))
 
+    if scrn == 1 and not falling:
+        falling = True
+        random_time = random.randint(16, 80)
+        if len(fallingrubbish) < 4:
+            rand_x = random.randint(0, 520 - bin1.width)
+            fallingrubbish.append(falling_trash(rand_x, 0, 50, 50))
+
+
+
+    if falling:
+        falling_wait += 1
+    if falling_wait == random_time:
+        falling = False
+        falling_wait = 0
 
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_LEFT] and scrn == 1 and x > 5:
-        x -= 5
-    if keys[pygame.K_RIGHT] and scrn == 1 and x < 420:
-        x += 5
 
 
-    # x += x_change
+
+
+
+
+    if keys[pygame.K_LEFT] and scrn == 1 and bin1.x > 5:
+        bin1.x -= bin1.vel
+    if keys[pygame.K_RIGHT] and scrn == 1 and bin1.x < 420:
+        bin1.x += bin1.vel
+
+
+
 
 
 
     clock.tick(80)
-    bin(x,y)
 
     redrawGameWindow()
 
