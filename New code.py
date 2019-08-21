@@ -17,7 +17,7 @@ bright_green = (0,255,0)
 font = pygame.font.SysFont('', 60, True)
 fontb = pygame.font.SysFont('', 40, True)
 scrn = 0
-
+score = 0
 trashImg = pygame.image.load('trash.png')
 binImg = pygame.image.load('bin.png')
 
@@ -59,12 +59,12 @@ class falling_trash(object):
         self.y = y
         self.width = width
         self.height = height
-        self.vel = 3
+        self.vel = 5
         self.hitbox = (self.x, self.y, 50, 50)
     def draw(self, screen):
         self.hitbox = (self.x, self.y, 50, 50)
         pygame.draw.rect(screen, (255, 0, 0), self.hitbox,2)
-        pygame.draw.rect(screen, (0, 0, 0), (self.x, self.y, self.width, self.height))
+        screen.blit(trashsize, (self.x, self.y))
 
 def button(action=''):
     global scrn, play, run
@@ -157,8 +157,8 @@ def redrawGameWindow():
         button('pushed')
 
 
-
-
+        text = fontc.render('SCORE: ' + str(score), 1, (0,0,0))
+        screen.blit(text, (200,20))
         for falling_trash1 in fallingrubbish:
             falling_trash1.draw(screen)
         bin1.drawbin(screen)
@@ -167,7 +167,7 @@ def redrawGameWindow():
 
 
 
-
+fontc = pygame.font.SysFont('comicsans',60,True)
 
 x = 260
 y = 550
@@ -197,12 +197,13 @@ while run:
             if falling_trash1.y < 0:
                 falling_trash1.y = 0
             elif falling_trash1.y < 600:
-                falling_trash1.y += 3
+                falling_trash1.y += 5
             falling_trash1.width = 50
             falling_trash1.height = 50
             if falling_trash1.y - 50 < bin1.hitbox[1] + bin1.hitbox[3] and falling_trash1.y + 50 > bin1.hitbox[1]:
                 if falling_trash1.x + 50 > bin1.hitbox[0] and falling_trash1.x < bin1.hitbox[0] + bin1.hitbox[2]:
                     bin1.hit()
+                    score += 1
                     fallingrubbish.pop(fallingrubbish.index(falling_trash1))
 
             if falling_trash1.y > 599:
