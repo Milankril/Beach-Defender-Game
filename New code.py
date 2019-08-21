@@ -20,9 +20,15 @@ scrn = 0
 score = 0
 trashImg = pygame.image.load('trash.png')
 binImg = pygame.image.load('bin.png')
-
+lifeHeart = pygame.image.load('lifeHeart.png')
+lifeHeart2 =pygame.image.load('lifeHeart.png')
+lifeHeart3 = pygame.image.load('lifeHeart.png')
+lifeHeart2size = pygame.transform.scale(lifeHeart, (30,30))
+lifeHeart3size =pygame.transform.scale(lifeHeart, (30,30))
+lifeHeartsize = pygame.transform.scale(lifeHeart, (30,30))
 trashsize = pygame.transform.scale(trashImg, (50,50))
 binsize = pygame.transform.scale(binImg, (100,100))
+
 
 
 class bin(object):
@@ -37,7 +43,7 @@ class bin(object):
     def drawbin(self, screen):
         self.hitbox = (self.x,self.y, 97,30)
         screen.blit(binsize, (self.x, self.y))
-        pygame.draw.rect(screen, (255, 0, 0), self.hitbox,2)
+        #pygame.draw.rect(screen, (255, 0, 0), self.hitbox,2)
 
     def movebin(self, screen):
         if keys[pygame.K_LEFT] and scrn == 1 and self.x > 5:
@@ -63,7 +69,7 @@ class falling_trash(object):
         self.hitbox = (self.x, self.y, 50, 50)
     def draw(self, screen):
         self.hitbox = (self.x, self.y, 50, 50)
-        pygame.draw.rect(screen, (255, 0, 0), self.hitbox,2)
+        #pygame.draw.rect(screen, (255, 0, 0), self.hitbox,2)
         screen.blit(trashsize, (self.x, self.y))
 
 def button(action=''):
@@ -143,7 +149,17 @@ def redrawGameWindow():
 
     if scrn==1:
         screen.blit(br, (0, 0))
-
+        if life == 3:
+            screen.blit(lifeHeartsize, (390,10))
+            screen.blit(lifeHeart2size, (420,10))
+            screen.blit(lifeHeart3size, (450,10))
+        if life == 2:
+            screen.blit(lifeHeartsize, (390,10))
+            screen.blit(lifeHeart2size, (420,10))
+        if life == 1:
+            screen.blit(lifeHeartsize, (390,10))
+        if life == 0:
+            scrn = 2
         mouse = pygame.mouse.get_pos()
 
         '''
@@ -158,17 +174,23 @@ def redrawGameWindow():
 
 
         text = fontc.render('SCORE: ' + str(score), 1, (0,0,0))
-        screen.blit(text, (200,20))
+        screen.blit(text, (170,10))
         for falling_trash1 in fallingrubbish:
             falling_trash1.draw(screen)
         bin1.drawbin(screen)
         pygame.display.update()
 
+    if scrn == 2:
+        screen.fill((0, 0, 0))
+        end = fontd.render("END, THE BEACH WAS POLLUTED", 1, (255, 255, 255))
+        screen.blit(end, (50, 300))
+        pygame.display.update()
 
 
 
-fontc = pygame.font.SysFont('comicsans',60,True)
 
+fontc = pygame.font.SysFont('comicsans',40,True)
+fontd = pygame.font.SysFont('comicsans',30,True)
 x = 260
 y = 550
 
@@ -183,6 +205,8 @@ rand_x = 0
 falling = False
 falling_wait = 0
 random_time = 0
+
+life = 3
 
 run = True
 while run:
@@ -207,6 +231,7 @@ while run:
                     fallingrubbish.pop(fallingrubbish.index(falling_trash1))
 
             if falling_trash1.y > 599:
+                life -= 1
                 fallingrubbish.pop(fallingrubbish.index(falling_trash1))
 
     if scrn == 1 and not falling:
