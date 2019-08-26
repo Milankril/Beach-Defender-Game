@@ -77,8 +77,10 @@ class falling_trash(object):
         #pygame.draw.rect(screen, (255, 0, 0), self.hitbox,2)
         screen.blit(trashsize, (self.x, self.y))
 
+    #play button
+    #####################################################################
 def button(action=''):
-    global scrn, play, run
+    global scrn, play, run, life, score, fallingrubbish, speed, cscore, playing
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     if 100+125 > mouse [0] > 100 and 478+50 > mouse [1] > 478 and scrn == 0:
@@ -88,11 +90,14 @@ def button(action=''):
         if click[0] == 1 and action == 'clicked':
             print("cancan")
             scrn = 1
+
             print(scrn)
     elif scrn == 0:
         pygame.draw.rect(screen, bright_green, (100,478,125,50))
         play = font.render('PLAY', 1, ((0, 0, 0)))
         screen.blit(play, (100, 485))
+
+    #####################################################################
 
 
 
@@ -108,7 +113,7 @@ def button(action=''):
         Quit = font.render('QUIT', 1, ((0, 0, 0)))
         screen.blit(Quit, (300, 485))
 
-    global life, score, fallingrubbish, speed, cscore
+
     if 10+90 > mouse [0] > 10 and 10+25 > mouse [1] > 10 and scrn == 1:
         pygame.draw.rect(screen, green, (10,10,90,25))
         back = fontb.render('BACK', 1, ((0, 0, 0)))
@@ -118,6 +123,8 @@ def button(action=''):
             scrn = 0
             life = 3
             score = 0
+            speed = 1
+            cscore = 0
 
             fallingrubbish = []
 
@@ -137,6 +144,8 @@ def button(action=''):
             scrn = 0
             life = 3
             score = 0
+            speed = 1
+            cscore = 0
 
             fallingrubbish = []
 
@@ -219,12 +228,24 @@ def redrawGameWindow():
         pygame.draw.rect(screen, green, (10,10,90,25))
         else:
         pygame.draw.rect(screen, bright_green, (10,10,90,25))
-        Play Again = fontb.render('Play Again', 1, ((0, 0, 0)))
-        screen.blit(Play Again, (10, 10))
+        menu = fontb.render('Menu', 1, ((0, 0, 0)))
+        screen.blit(menu, (10, 10))
         '''
+
+        '''
+        if 10+90 > mouse [0] > 10 and 10+25 > mouse [1] > 10:
+        pygame.draw.rect(screen, green, (10,10,90,25))
+        else:
+        pygame.draw.rect(screen, bright_green, (10,10,90,25))
+        Pause = fontb.render('pause', 1, ((0, 0, 0)))
+        screen.blit(Pause, (430, 10))
+        '''
+
         button('punched')
 
         pygame.display.update()
+
+
 
 
 
@@ -267,7 +288,7 @@ while run:
                 falling_trash1.y += 2 * falling_trash1.vel
             falling_trash1.width = 50
             falling_trash1.height = 50
-            if falling_trash1.y - 50 < bin1.hitbox[1] + bin1.hitbox[3] and falling_trash1.y + 50 > bin1.hitbox[1]:
+            if falling_trash1.y < bin1.hitbox[1] + bin1.hitbox[3] and falling_trash1.y + 50 > bin1.hitbox[1]:
                 if falling_trash1.x + 50 > bin1.hitbox[0] and falling_trash1.x < bin1.hitbox[0] + bin1.hitbox[2]:
                     bin1.hit()
                     score += 1
@@ -276,6 +297,7 @@ while run:
             if falling_trash1.y > 599:
                 life -= 1
                 fallingrubbish.pop(fallingrubbish.index(falling_trash1))
+
 
     if scrn == 1 and not falling:
         falling = True
@@ -304,17 +326,10 @@ while run:
 
 
 
-
-
-
-
-    if keys[pygame.K_LEFT] and scrn == 1 and bin1.x > 5:
+    if keys[pygame.K_LEFT] and scrn == 1 and bin1.x > 10:
         bin1.x -= bin1.vel
     if keys[pygame.K_RIGHT] and scrn == 1 and bin1.x < 420:
         bin1.x += bin1.vel
-
-
-
 
 
 
