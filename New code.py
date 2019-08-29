@@ -6,7 +6,9 @@ screenheight = 676
 screen = pygame.display.set_mode((screenwidth, screenheight)) # Background position
 pygame.display.set_caption("Beach Defender")
 bg = pygame.image.load('bg.png') # Background Image
-br = pygame.image.load('br.png') # Background when playing game
+br = pygame.image.load('brrr.png') # Background when playing game
+hp = pygame.image.load('Help.png')
+end = pygame.image.load('end.png')
 clock = pygame.time.Clock()
 green = (0,200,0)
 red = (200,0,0)
@@ -78,7 +80,8 @@ class falling_trash(object):
         screen.blit(trashsize, (self.x, self.y))
 
     #play button
-    #####################################################################
+
+
 def button(action=''):
     global scrn, play, run, life, score, fallingrubbish, speed, cscore, playing
     mouse = pygame.mouse.get_pos()
@@ -88,16 +91,17 @@ def button(action=''):
         play = font.render('PLAY', 1, ((0, 0, 0)))
         screen.blit(play, (100, 485))
         if click[0] == 1 and action == 'clicked':
-            print("cancan")
-            scrn = 1
-
+            print("cancan")                                                         #play button
+            scrn = 3
             print(scrn)
     elif scrn == 0:
         pygame.draw.rect(screen, bright_green, (100,478,125,50))
         play = font.render('PLAY', 1, ((0, 0, 0)))
         screen.blit(play, (100, 485))
 
-    #####################################################################
+
+
+
 
 
 
@@ -106,7 +110,7 @@ def button(action=''):
         pygame.draw.rect(screen, red, (300,478,125,50))
         Quit = font.render('QUIT', 1, ((0, 0, 0)))
         screen.blit(Quit, (300, 485))
-        if click[0] == 1 and action == 'pressed':
+        if click[0] == 1 and action == 'pressed':                                   #Quit button
             run = False
     elif scrn == 0:
         pygame.draw.rect(screen, bright_red, (300,478,125,50))
@@ -114,11 +118,13 @@ def button(action=''):
         screen.blit(Quit, (300, 485))
 
 
-    if 10+90 > mouse [0] > 10 and 10+25 > mouse [1] > 10 and scrn == 1:
+
+
+    if 10+90 > mouse [0] > 10 and 10+25 > mouse [1] > 10 and scrn == 1 and not pause:
         pygame.draw.rect(screen, green, (10,10,90,25))
         back = fontb.render('BACK', 1, ((0, 0, 0)))
         screen.blit(back, (10, 10))
-        if click[0] == 1 and action == 'pushed':
+        if click[0] == 1 and action == 'pushed':                                    #Back buttomn
             print("cancan")
             scrn = 0
             life = 3
@@ -135,6 +141,7 @@ def button(action=''):
         screen.blit(back, (10, 10))
 
 
+
     if 10+90 > mouse [0] > 10 and 10+25 > mouse [1] > 10 and scrn == 2:
         pygame.draw.rect(screen, green, (10,10,90,25))
         menu = fontb.render('Menu', 1, ((0, 0, 0)))
@@ -143,7 +150,7 @@ def button(action=''):
             print("cancan")
             scrn = 0
             life = 3
-            score = 0
+            score = 0                                                               #menu button
             speed = 1
             cscore = 0
 
@@ -187,6 +194,7 @@ def redrawGameWindow():
 
     if scrn==1:
         screen.blit(br, (0, 0))
+
         if life == 3:
             screen.blit(lifeHeartsize, (390,10))
             screen.blit(lifeHeart2size, (420,10))
@@ -212,6 +220,7 @@ def redrawGameWindow():
         button('pushed')
 
 
+
         text = fontc.render('SCORE: ' + str(score), 1, (0,0,0))
         screen.blit(text, (170,10))
         for falling_trash1 in fallingrubbish:
@@ -221,8 +230,8 @@ def redrawGameWindow():
 
     if scrn == 2:
         screen.fill((0, 0, 0))
-        end = fontd.render("END, THE BEACH WAS POLLUTED", 1, (255, 255, 255))
-        screen.blit(end, (50, 300))
+        screen.blit(end, (0, 0))
+
         '''
         if 10+90 > mouse [0] > 10 and 10+25 > mouse [1] > 10:
         pygame.draw.rect(screen, green, (10,10,90,25))
@@ -231,18 +240,17 @@ def redrawGameWindow():
         menu = fontb.render('Menu', 1, ((0, 0, 0)))
         screen.blit(menu, (10, 10))
         '''
-
-        '''
-        if 10+90 > mouse [0] > 10 and 10+25 > mouse [1] > 10:
-        pygame.draw.rect(screen, green, (10,10,90,25))
-        else:
-        pygame.draw.rect(screen, bright_green, (10,10,90,25))
-        Pause = fontb.render('pause', 1, ((0, 0, 0)))
-        screen.blit(Pause, (430, 10))
-        '''
-
         button('punched')
 
+
+
+        pygame.display.update()
+
+
+    if scrn == 3:
+
+        screen.fill((0,0,0))
+        screen.blit(hp, (0, 0))
         pygame.display.update()
 
 
@@ -267,6 +275,10 @@ falling = False
 falling_wait = 0
 random_time = 0
 
+pause = False
+p_wait = False
+p_tick = 0
+
 life = 3
 speed = 1
 cscore = 0
@@ -281,7 +293,7 @@ while run:
             run = False
 
     for falling_trash1 in fallingrubbish:
-        if scrn == 1:
+        if scrn == 1 and not pause:
             if falling_trash1.y < 0:
                 falling_trash1.y = 0
             elif falling_trash1.y < 600:
@@ -302,12 +314,12 @@ while run:
     if scrn == 1 and not falling:
         falling = True
         random_time = random.randint(16, 80)
-        if len(fallingrubbish) < 4:
+        if len(fallingrubbish) < 4 and not pause:
             rand_x = random.randint(0, 520 - bin1.width)
             fallingrubbish.append(falling_trash(rand_x, 0, 50, 50, speed))
 
     for falling_trash1 in fallingrubbish:
-        if scrn == 1:
+        if scrn == 1 and not pause:
             if score == cscore + 10 and not playing:
                 cscore = cscore + 10
                 playing = True
@@ -316,21 +328,36 @@ while run:
                 speed += 1
                 playing = False
 
-    if falling and scrn == 1:
+    if falling and scrn == 1 and not pause:
         falling_wait += 1
-    if falling_wait == random_time:
+    if falling_wait == random_time and not pause:
         falling = False
         falling_wait = 0
 
     keys = pygame.key.get_pressed()
 
+    if keys[pygame.K_SPACE] and scrn == 3 and not pause:
+        scrn = 1
 
-
-    if keys[pygame.K_LEFT] and scrn == 1 and bin1.x > 10:
+    if keys[pygame.K_LEFT] and scrn == 1 and bin1.x > 10 and not pause:
         bin1.x -= bin1.vel
-    if keys[pygame.K_RIGHT] and scrn == 1 and bin1.x < 420:
+    if keys[pygame.K_RIGHT] and scrn == 1 and bin1.x < 420 and not pause:
         bin1.x += bin1.vel
 
+
+    if keys[pygame.K_p] and scrn == 1 and not pause and not p_wait:
+        pause = True
+        p_wait = True
+
+    if keys[pygame.K_p] and scrn == 1 and pause and not p_wait:
+        pause = False
+        p_wait = True
+
+    if p_wait:
+        p_tick += 1
+    if p_tick == 20:
+        p_wait = False
+        p_tick = 0
 
 
     clock.tick(80)
